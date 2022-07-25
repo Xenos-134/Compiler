@@ -1,0 +1,4309 @@
+Terminals unused in grammar
+
+    tREAD
+    tTYPE_POINTER
+    tTYPE_AUTO
+    tPRIVATE
+
+
+State 22 conflicts: 21 shift/reduce, 1 reduce/reduce
+State 31 conflicts: 33 reduce/reduce
+State 60 conflicts: 1 shift/reduce
+State 63 conflicts: 1 shift/reduce
+State 64 conflicts: 3 shift/reduce
+State 65 conflicts: 1 shift/reduce
+State 68 conflicts: 1 shift/reduce
+State 86 conflicts: 3 shift/reduce
+State 99 conflicts: 1 shift/reduce
+State 133 conflicts: 32 reduce/reduce
+State 145 conflicts: 48 reduce/reduce
+State 200 conflicts: 3 reduce/reduce
+State 218 conflicts: 3 reduce/reduce
+
+
+Grammar
+
+    0 $accept: file $end
+
+    1 file: %empty
+    2     | declarations
+
+    3 declarations: declaration
+    4             | declarations declaration
+
+    5 declaration: vardec
+    6            | fundef
+    7            | fundec
+    8            | program
+
+    9 fundec: tFOREIGN data_type tIDENTIFIER
+   10       | data_type tIDENTIFIER
+   11       | tUSE data_type tIDENTIFIER
+
+   12 fundeff: '(' argdecs ')' '-' '>' data_type ':' block
+
+   13 fundef: identifiers tIDENTIFIER '=' fundeff
+
+   14 vardec: identifiers data_type tIDENTIFIER opt_initializer
+   15       | data_type tIDENTIFIER opt_initializer
+   16       | identifiers tIDENTIFIER opt_initializer
+
+   17 opt_initializer: %empty
+   18                | '=' expr
+
+   19 identifiers: tVAR
+   20            | tPUBLIC
+
+   21 program: tBEGIN block tEND
+
+   22 block: '{' opt_instructions '}'
+   23      | '{' opt_vardecs opt_instructions '}'
+
+   24 opt_vardecs: %empty
+   25            | vardecs
+
+   26 opt_instructions: %empty
+   27                 | instructions
+
+   28 vardecs: vardec ';'
+   29        | vardec
+   30        | fundef
+   31        | fundec ';'
+   32        | vardecs vardec ';'
+   33        | vardecs fundec ';'
+   34        | vardecs vardec
+   35        | vardecs fundef
+   36        | vardecs fundec
+
+   37 instructions: stmt
+   38             | instructions stmt
+
+   39 argdecs: %empty
+   40        | argdec
+   41        | argdecs ',' argdec
+
+   42 argdec: data_type tIDENTIFIER
+
+   43 data_type: basic_type
+   44          | function_type
+
+   45 basic_type: tTYPE_STRING
+   46           | tTYPE_INT
+   47           | tTYPE_REAL
+   48           | tTYPE_VOID
+   49           | '[' data_type ']'
+
+   50 function_type: data_type '<' data_types '>'
+   51              | data_type '<' '>'
+
+   52 data_types: data_type
+   53           | data_types ',' data_type
+
+   54 stmt: expr ';'
+   55     | expr
+   56     | tIF expr tTHEN block
+   57     | tIF expr tTHEN block elif
+   58     | tWHILE '(' expr ')' tDO block
+   59     | tSTOP ';'
+   60     | tAGAIN ';'
+   61     | tINPUT ';'
+   62     | tRETURN expr ';'
+   63     | tRETURN expr
+   64     | tELSE stmt
+   65     | tWRITE expressions ';'
+   66     | tWRITELN expressions ';'
+   67     | rec_fun_cal ';'
+
+   68 funcal_exr: expr
+   69           | fundef
+   70           | '(' expr ')'
+   71           | '(' fundef ')'
+   72           | funcal_exr ',' fundef
+   73           | funcal_exr ',' expr
+   74           | funcal_exr ',' '(' fundef ')'
+   75           | funcal_exr ',' '(' expr ')'
+   76           | funcal_exr '(' expr ')'
+
+   77 rec_fun_cal: '@' '(' funcal_exr ')'
+   78            | '@' '(' ')'
+
+   79 elif: tELSE block
+   80     | tELIF expr tTHEN block
+   81     | tELIF expr tTHEN block elif
+
+   82 expressions: expr
+   83            | expressions ',' expr
+
+   84 expr: integer
+   85     | real
+   86     | string
+   87     | tNULLPTR
+   88     | tNOT expr
+   89     | tSIZEOF '(' expr ')'
+   90     | '[' expr ']'
+   91     | lval '=' expr
+   92     | '-' '-' expr
+   93     | '-' expr
+   94     | '+' expr
+   95     | expr '+' expr
+   96     | '(' fundeff ')' expr
+   97     | fundeff
+   98     | expr '-' expr
+   99     | expr '*' expr
+  100     | expr '/' expr
+  101     | expr '%' expr
+  102     | expr '<' expr
+  103     | expr '>' expr
+  104     | expr tGE expr
+  105     | expr tLE expr
+  106     | expr tNE expr
+  107     | expr tEQ expr
+  108     | expr tAND expr
+  109     | expr tOR expr
+  110     | '(' expr ')'
+  111     | lval
+  112     | lval '?'
+  113     | lval '(' funcal_exr ')'
+  114     | lval '(' ')'
+  115     | rec_fun_cal
+
+  116 lval: tIDENTIFIER
+  117     | expr '[' expr ']'
+
+  118 integer: tINTEGER
+
+  119 real: tREAL
+
+  120 string: tSTRING
+  121       | string tSTRING
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    '%' (37) 101
+    '(' (40) 12 58 70 71 74 75 76 77 78 89 96 110 113 114
+    ')' (41) 12 58 70 71 74 75 76 77 78 89 96 110 113 114
+    '*' (42) 99
+    '+' (43) 94 95
+    ',' (44) 41 53 72 73 74 75 83
+    '-' (45) 12 92 93 98
+    '/' (47) 100
+    ':' (58) 12
+    ';' (59) 28 31 32 33 54 59 60 61 62 65 66 67
+    '<' (60) 50 51 102
+    '=' (61) 13 18 91
+    '>' (62) 12 50 51 103
+    '?' (63) 112
+    '@' (64) 77 78
+    '[' (91) 49 90 117
+    ']' (93) 49 90 117
+    '{' (123) 22 23
+    '}' (125) 22 23
+    error (256)
+    tINTEGER <i> (258) 118
+    tREAL <d> (259) 119
+    tAND (260) 108
+    tOR (261) 109
+    tNE (262) 106
+    tLE (263) 105
+    tGE (264) 104
+    tSIZEOF (265) 89
+    tNOT (266) 88
+    tWHILE (267) 58
+    tREAD (268)
+    tBEGIN (269) 21
+    tEND (270) 21
+    tTYPE_STRING (271) 45
+    tTYPE_INT (272) 46
+    tTYPE_REAL (273) 47
+    tTYPE_POINTER (274)
+    tTYPE_AUTO (275)
+    tTYPE_VOID (276) 48
+    tRETURN (277) 62 63
+    tPUBLIC (278) 20
+    tUSE (279) 11
+    tFOREIGN (280) 9
+    tPRIVATE (281)
+    tVAR (282) 19
+    tDO (283) 58
+    tSTOP (284) 59
+    tAGAIN (285) 60
+    tIF (286) 56 57
+    tTHEN (287) 56 57 80 81
+    tELIF (288) 80 81
+    tELSE (289) 64 79
+    tINPUT (290) 61
+    tWRITE (291) 65
+    tWRITELN (292) 66
+    tIDENTIFIER <s> (293) 9 10 11 13 14 15 16 42 116
+    tSTRING <s> (294) 120 121
+    tNULLPTR <expression> (295) 87
+    tEQ (296) 107
+    tUNARY (297)
+
+
+Nonterminals, with rules where they appear
+
+    $accept (62)
+        on left: 0
+    file <sequence> (63)
+        on left: 1 2
+        on right: 0
+    declarations <sequence> (64)
+        on left: 3 4
+        on right: 2 4
+    declaration <node> (65)
+        on left: 5 6 7 8
+        on right: 3 4
+    fundec <node> (66)
+        on left: 9 10 11
+        on right: 7 31 33 36
+    fundeff <expression> (67)
+        on left: 12
+        on right: 13 96 97
+    fundef <node> (68)
+        on left: 13
+        on right: 6 30 35 69 71 72 74
+    vardec <node> (69)
+        on left: 14 15 16
+        on right: 5 28 29 32 34
+    opt_initializer <expression> (70)
+        on left: 17 18
+        on right: 14 15 16
+    identifiers <i> (71)
+        on left: 19 20
+        on right: 13 14 16
+    program <node> (72)
+        on left: 21
+        on right: 8
+    block <block> (73)
+        on left: 22 23
+        on right: 12 21 56 57 58 79 80 81
+    opt_vardecs <sequence> (74)
+        on left: 24 25
+        on right: 23
+    opt_instructions <sequence> (75)
+        on left: 26 27
+        on right: 22 23
+    vardecs <sequence> (76)
+        on left: 28 29 30 31 32 33 34 35 36
+        on right: 25 32 33 34 35 36
+    instructions <sequence> (77)
+        on left: 37 38
+        on right: 27 38
+    argdecs <sequence> (78)
+        on left: 39 40 41
+        on right: 12 41
+    argdec <node> (79)
+        on left: 42
+        on right: 40 41
+    data_type <type> (80)
+        on left: 43 44
+        on right: 9 10 11 12 14 15 42 49 50 51 52 53
+    basic_type <type> (81)
+        on left: 45 46 47 48 49
+        on right: 43
+    function_type <type> (82)
+        on left: 50 51
+        on right: 44
+    data_types <types> (83)
+        on left: 52 53
+        on right: 50 53
+    stmt <node> (84)
+        on left: 54 55 56 57 58 59 60 61 62 63 64 65 66 67
+        on right: 37 38 64
+    funcal_exr <sequence> (85)
+        on left: 68 69 70 71 72 73 74 75 76
+        on right: 72 73 74 75 76 77 113
+    rec_fun_cal <expression> (86)
+        on left: 77 78
+        on right: 67 115
+    elif <node> (87)
+        on left: 79 80 81
+        on right: 57 81
+    expressions <sequence> (88)
+        on left: 82 83
+        on right: 65 66 83
+    expr <expression> (89)
+        on left: 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115
+        on right: 18 54 55 56 57 58 62 63 68 70 73 75 76 80 81 82 83 88 89 90 91 92 93 94 95 96 98 99 100 101 102 103 104 105 106 107 108 109 110 117
+    lval <lvalue> (90)
+        on left: 116 117
+        on right: 91 111 112 113 114
+    integer <expression> (91)
+        on left: 118
+        on right: 84
+    real <expression> (92)
+        on left: 119
+        on right: 85
+    string <s> (93)
+        on left: 120 121
+        on right: 86 121
+
+
+State 0
+
+    0 $accept: . file $end
+
+    tBEGIN        shift, and go to state 1
+    tTYPE_STRING  shift, and go to state 2
+    tTYPE_INT     shift, and go to state 3
+    tTYPE_REAL    shift, and go to state 4
+    tTYPE_VOID    shift, and go to state 5
+    tPUBLIC       shift, and go to state 6
+    tUSE          shift, and go to state 7
+    tFOREIGN      shift, and go to state 8
+    tVAR          shift, and go to state 9
+    '['           shift, and go to state 10
+
+    $default  reduce using rule 1 (file)
+
+    file           go to state 11
+    declarations   go to state 12
+    declaration    go to state 13
+    fundec         go to state 14
+    fundef         go to state 15
+    vardec         go to state 16
+    identifiers    go to state 17
+    program        go to state 18
+    data_type      go to state 19
+    basic_type     go to state 20
+    function_type  go to state 21
+
+
+State 1
+
+   21 program: tBEGIN . block tEND
+
+    '{'  shift, and go to state 22
+
+    block  go to state 23
+
+
+State 2
+
+   45 basic_type: tTYPE_STRING .
+
+    $default  reduce using rule 45 (basic_type)
+
+
+State 3
+
+   46 basic_type: tTYPE_INT .
+
+    $default  reduce using rule 46 (basic_type)
+
+
+State 4
+
+   47 basic_type: tTYPE_REAL .
+
+    $default  reduce using rule 47 (basic_type)
+
+
+State 5
+
+   48 basic_type: tTYPE_VOID .
+
+    $default  reduce using rule 48 (basic_type)
+
+
+State 6
+
+   20 identifiers: tPUBLIC .
+
+    $default  reduce using rule 20 (identifiers)
+
+
+State 7
+
+   11 fundec: tUSE . data_type tIDENTIFIER
+
+    tTYPE_STRING  shift, and go to state 2
+    tTYPE_INT     shift, and go to state 3
+    tTYPE_REAL    shift, and go to state 4
+    tTYPE_VOID    shift, and go to state 5
+    '['           shift, and go to state 10
+
+    data_type      go to state 24
+    basic_type     go to state 20
+    function_type  go to state 21
+
+
+State 8
+
+    9 fundec: tFOREIGN . data_type tIDENTIFIER
+
+    tTYPE_STRING  shift, and go to state 2
+    tTYPE_INT     shift, and go to state 3
+    tTYPE_REAL    shift, and go to state 4
+    tTYPE_VOID    shift, and go to state 5
+    '['           shift, and go to state 10
+
+    data_type      go to state 25
+    basic_type     go to state 20
+    function_type  go to state 21
+
+
+State 9
+
+   19 identifiers: tVAR .
+
+    $default  reduce using rule 19 (identifiers)
+
+
+State 10
+
+   49 basic_type: '[' . data_type ']'
+
+    tTYPE_STRING  shift, and go to state 2
+    tTYPE_INT     shift, and go to state 3
+    tTYPE_REAL    shift, and go to state 4
+    tTYPE_VOID    shift, and go to state 5
+    '['           shift, and go to state 10
+
+    data_type      go to state 26
+    basic_type     go to state 20
+    function_type  go to state 21
+
+
+State 11
+
+    0 $accept: file . $end
+
+    $end  shift, and go to state 27
+
+
+State 12
+
+    2 file: declarations .
+    4 declarations: declarations . declaration
+
+    tBEGIN        shift, and go to state 1
+    tTYPE_STRING  shift, and go to state 2
+    tTYPE_INT     shift, and go to state 3
+    tTYPE_REAL    shift, and go to state 4
+    tTYPE_VOID    shift, and go to state 5
+    tPUBLIC       shift, and go to state 6
+    tUSE          shift, and go to state 7
+    tFOREIGN      shift, and go to state 8
+    tVAR          shift, and go to state 9
+    '['           shift, and go to state 10
+
+    $default  reduce using rule 2 (file)
+
+    declaration    go to state 28
+    fundec         go to state 14
+    fundef         go to state 15
+    vardec         go to state 16
+    identifiers    go to state 17
+    program        go to state 18
+    data_type      go to state 19
+    basic_type     go to state 20
+    function_type  go to state 21
+
+
+State 13
+
+    3 declarations: declaration .
+
+    $default  reduce using rule 3 (declarations)
+
+
+State 14
+
+    7 declaration: fundec .
+
+    $default  reduce using rule 7 (declaration)
+
+
+State 15
+
+    6 declaration: fundef .
+
+    $default  reduce using rule 6 (declaration)
+
+
+State 16
+
+    5 declaration: vardec .
+
+    $default  reduce using rule 5 (declaration)
+
+
+State 17
+
+   13 fundef: identifiers . tIDENTIFIER '=' fundeff
+   14 vardec: identifiers . data_type tIDENTIFIER opt_initializer
+   16       | identifiers . tIDENTIFIER opt_initializer
+
+    tTYPE_STRING  shift, and go to state 2
+    tTYPE_INT     shift, and go to state 3
+    tTYPE_REAL    shift, and go to state 4
+    tTYPE_VOID    shift, and go to state 5
+    tIDENTIFIER   shift, and go to state 29
+    '['           shift, and go to state 10
+
+    data_type      go to state 30
+    basic_type     go to state 20
+    function_type  go to state 21
+
+
+State 18
+
+    8 declaration: program .
+
+    $default  reduce using rule 8 (declaration)
+
+
+State 19
+
+   10 fundec: data_type . tIDENTIFIER
+   15 vardec: data_type . tIDENTIFIER opt_initializer
+   50 function_type: data_type . '<' data_types '>'
+   51              | data_type . '<' '>'
+
+    tIDENTIFIER  shift, and go to state 31
+    '<'          shift, and go to state 32
+
+
+State 20
+
+   43 data_type: basic_type .
+
+    $default  reduce using rule 43 (data_type)
+
+
+State 21
+
+   44 data_type: function_type .
+
+    $default  reduce using rule 44 (data_type)
+
+
+State 22
+
+   22 block: '{' . opt_instructions '}'
+   23      | '{' . opt_vardecs opt_instructions '}'
+
+    tINTEGER      shift, and go to state 33
+    tREAL         shift, and go to state 34
+    tSIZEOF       shift, and go to state 35
+    tNOT          shift, and go to state 36
+    tWHILE        shift, and go to state 37
+    tTYPE_STRING  shift, and go to state 2
+    tTYPE_INT     shift, and go to state 3
+    tTYPE_REAL    shift, and go to state 4
+    tTYPE_VOID    shift, and go to state 5
+    tRETURN       shift, and go to state 38
+    tPUBLIC       shift, and go to state 6
+    tUSE          shift, and go to state 7
+    tFOREIGN      shift, and go to state 8
+    tVAR          shift, and go to state 9
+    tSTOP         shift, and go to state 39
+    tAGAIN        shift, and go to state 40
+    tIF           shift, and go to state 41
+    tELSE         shift, and go to state 42
+    tINPUT        shift, and go to state 43
+    tWRITE        shift, and go to state 44
+    tWRITELN      shift, and go to state 45
+    tIDENTIFIER   shift, and go to state 46
+    tSTRING       shift, and go to state 47
+    tNULLPTR      shift, and go to state 48
+    '+'           shift, and go to state 49
+    '-'           shift, and go to state 50
+    '['           shift, and go to state 51
+    '('           shift, and go to state 52
+    '@'           shift, and go to state 53
+
+    tINTEGER     [reduce using rule 24 (opt_vardecs)]
+    tREAL        [reduce using rule 24 (opt_vardecs)]
+    tSIZEOF      [reduce using rule 24 (opt_vardecs)]
+    tNOT         [reduce using rule 24 (opt_vardecs)]
+    tWHILE       [reduce using rule 24 (opt_vardecs)]
+    tRETURN      [reduce using rule 24 (opt_vardecs)]
+    tSTOP        [reduce using rule 24 (opt_vardecs)]
+    tAGAIN       [reduce using rule 24 (opt_vardecs)]
+    tIF          [reduce using rule 24 (opt_vardecs)]
+    tELSE        [reduce using rule 24 (opt_vardecs)]
+    tINPUT       [reduce using rule 24 (opt_vardecs)]
+    tWRITE       [reduce using rule 24 (opt_vardecs)]
+    tWRITELN     [reduce using rule 24 (opt_vardecs)]
+    tIDENTIFIER  [reduce using rule 24 (opt_vardecs)]
+    tSTRING      [reduce using rule 24 (opt_vardecs)]
+    tNULLPTR     [reduce using rule 24 (opt_vardecs)]
+    '+'          [reduce using rule 24 (opt_vardecs)]
+    '-'          [reduce using rule 24 (opt_vardecs)]
+    '['          [reduce using rule 24 (opt_vardecs)]
+    '('          [reduce using rule 24 (opt_vardecs)]
+    '}'          reduce using rule 24 (opt_vardecs)
+    '}'          [reduce using rule 26 (opt_instructions)]
+    '@'          [reduce using rule 24 (opt_vardecs)]
+    $default     reduce using rule 24 (opt_vardecs)
+
+    fundec            go to state 54
+    fundeff           go to state 55
+    fundef            go to state 56
+    vardec            go to state 57
+    identifiers       go to state 17
+    opt_vardecs       go to state 58
+    opt_instructions  go to state 59
+    vardecs           go to state 60
+    instructions      go to state 61
+    data_type         go to state 19
+    basic_type        go to state 20
+    function_type     go to state 21
+    stmt              go to state 62
+    rec_fun_cal       go to state 63
+    expr              go to state 64
+    lval              go to state 65
+    integer           go to state 66
+    real              go to state 67
+    string            go to state 68
+
+
+State 23
+
+   21 program: tBEGIN block . tEND
+
+    tEND  shift, and go to state 69
+
+
+State 24
+
+   11 fundec: tUSE data_type . tIDENTIFIER
+   50 function_type: data_type . '<' data_types '>'
+   51              | data_type . '<' '>'
+
+    tIDENTIFIER  shift, and go to state 70
+    '<'          shift, and go to state 32
+
+
+State 25
+
+    9 fundec: tFOREIGN data_type . tIDENTIFIER
+   50 function_type: data_type . '<' data_types '>'
+   51              | data_type . '<' '>'
+
+    tIDENTIFIER  shift, and go to state 71
+    '<'          shift, and go to state 32
+
+
+State 26
+
+   49 basic_type: '[' data_type . ']'
+   50 function_type: data_type . '<' data_types '>'
+   51              | data_type . '<' '>'
+
+    '<'  shift, and go to state 32
+    ']'  shift, and go to state 72
+
+
+State 27
+
+    0 $accept: file $end .
+
+    $default  accept
+
+
+State 28
+
+    4 declarations: declarations declaration .
+
+    $default  reduce using rule 4 (declarations)
+
+
+State 29
+
+   13 fundef: identifiers tIDENTIFIER . '=' fundeff
+   16 vardec: identifiers tIDENTIFIER . opt_initializer
+
+    '='  shift, and go to state 73
+
+    $default  reduce using rule 17 (opt_initializer)
+
+    opt_initializer  go to state 74
+
+
+State 30
+
+   14 vardec: identifiers data_type . tIDENTIFIER opt_initializer
+   50 function_type: data_type . '<' data_types '>'
+   51              | data_type . '<' '>'
+
+    tIDENTIFIER  shift, and go to state 75
+    '<'          shift, and go to state 32
+
+
+State 31
+
+   10 fundec: data_type tIDENTIFIER .
+   15 vardec: data_type tIDENTIFIER . opt_initializer
+
+    '='  shift, and go to state 76
+
+    $end          reduce using rule 10 (fundec)
+    $end          [reduce using rule 17 (opt_initializer)]
+    tINTEGER      reduce using rule 10 (fundec)
+    tINTEGER      [reduce using rule 17 (opt_initializer)]
+    tREAL         reduce using rule 10 (fundec)
+    tREAL         [reduce using rule 17 (opt_initializer)]
+    tSIZEOF       reduce using rule 10 (fundec)
+    tSIZEOF       [reduce using rule 17 (opt_initializer)]
+    tNOT          reduce using rule 10 (fundec)
+    tNOT          [reduce using rule 17 (opt_initializer)]
+    tWHILE        reduce using rule 10 (fundec)
+    tWHILE        [reduce using rule 17 (opt_initializer)]
+    tBEGIN        reduce using rule 10 (fundec)
+    tBEGIN        [reduce using rule 17 (opt_initializer)]
+    tTYPE_STRING  reduce using rule 10 (fundec)
+    tTYPE_STRING  [reduce using rule 17 (opt_initializer)]
+    tTYPE_INT     reduce using rule 10 (fundec)
+    tTYPE_INT     [reduce using rule 17 (opt_initializer)]
+    tTYPE_REAL    reduce using rule 10 (fundec)
+    tTYPE_REAL    [reduce using rule 17 (opt_initializer)]
+    tTYPE_VOID    reduce using rule 10 (fundec)
+    tTYPE_VOID    [reduce using rule 17 (opt_initializer)]
+    tRETURN       reduce using rule 10 (fundec)
+    tRETURN       [reduce using rule 17 (opt_initializer)]
+    tPUBLIC       reduce using rule 10 (fundec)
+    tPUBLIC       [reduce using rule 17 (opt_initializer)]
+    tUSE          reduce using rule 10 (fundec)
+    tUSE          [reduce using rule 17 (opt_initializer)]
+    tFOREIGN      reduce using rule 10 (fundec)
+    tFOREIGN      [reduce using rule 17 (opt_initializer)]
+    tVAR          reduce using rule 10 (fundec)
+    tVAR          [reduce using rule 17 (opt_initializer)]
+    tSTOP         reduce using rule 10 (fundec)
+    tSTOP         [reduce using rule 17 (opt_initializer)]
+    tAGAIN        reduce using rule 10 (fundec)
+    tAGAIN        [reduce using rule 17 (opt_initializer)]
+    tIF           reduce using rule 10 (fundec)
+    tIF           [reduce using rule 17 (opt_initializer)]
+    tELSE         reduce using rule 10 (fundec)
+    tELSE         [reduce using rule 17 (opt_initializer)]
+    tINPUT        reduce using rule 10 (fundec)
+    tINPUT        [reduce using rule 17 (opt_initializer)]
+    tWRITE        reduce using rule 10 (fundec)
+    tWRITE        [reduce using rule 17 (opt_initializer)]
+    tWRITELN      reduce using rule 10 (fundec)
+    tWRITELN      [reduce using rule 17 (opt_initializer)]
+    tIDENTIFIER   reduce using rule 10 (fundec)
+    tIDENTIFIER   [reduce using rule 17 (opt_initializer)]
+    tSTRING       reduce using rule 10 (fundec)
+    tSTRING       [reduce using rule 17 (opt_initializer)]
+    tNULLPTR      reduce using rule 10 (fundec)
+    tNULLPTR      [reduce using rule 17 (opt_initializer)]
+    '+'           reduce using rule 10 (fundec)
+    '+'           [reduce using rule 17 (opt_initializer)]
+    '-'           reduce using rule 10 (fundec)
+    '-'           [reduce using rule 17 (opt_initializer)]
+    '['           reduce using rule 10 (fundec)
+    '['           [reduce using rule 17 (opt_initializer)]
+    '('           reduce using rule 10 (fundec)
+    '('           [reduce using rule 17 (opt_initializer)]
+    '}'           reduce using rule 10 (fundec)
+    '}'           [reduce using rule 17 (opt_initializer)]
+    ';'           reduce using rule 10 (fundec)
+    ';'           [reduce using rule 17 (opt_initializer)]
+    '@'           reduce using rule 10 (fundec)
+    '@'           [reduce using rule 17 (opt_initializer)]
+    $default      reduce using rule 10 (fundec)
+
+    opt_initializer  go to state 77
+
+
+State 32
+
+   50 function_type: data_type '<' . data_types '>'
+   51              | data_type '<' . '>'
+
+    tTYPE_STRING  shift, and go to state 2
+    tTYPE_INT     shift, and go to state 3
+    tTYPE_REAL    shift, and go to state 4
+    tTYPE_VOID    shift, and go to state 5
+    '>'           shift, and go to state 78
+    '['           shift, and go to state 10
+
+    data_type      go to state 79
+    basic_type     go to state 20
+    function_type  go to state 21
+    data_types     go to state 80
+
+
+State 33
+
+  118 integer: tINTEGER .
+
+    $default  reduce using rule 118 (integer)
+
+
+State 34
+
+  119 real: tREAL .
+
+    $default  reduce using rule 119 (real)
+
+
+State 35
+
+   89 expr: tSIZEOF . '(' expr ')'
+
+    '('  shift, and go to state 81
+
+
+State 36
+
+   88 expr: tNOT . expr
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 84
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 37
+
+   58 stmt: tWHILE . '(' expr ')' tDO block
+
+    '('  shift, and go to state 85
+
+
+State 38
+
+   62 stmt: tRETURN . expr ';'
+   63     | tRETURN . expr
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 86
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 39
+
+   59 stmt: tSTOP . ';'
+
+    ';'  shift, and go to state 87
+
+
+State 40
+
+   60 stmt: tAGAIN . ';'
+
+    ';'  shift, and go to state 88
+
+
+State 41
+
+   56 stmt: tIF . expr tTHEN block
+   57     | tIF . expr tTHEN block elif
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 89
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 42
+
+   64 stmt: tELSE . stmt
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tWHILE       shift, and go to state 37
+    tRETURN      shift, and go to state 38
+    tSTOP        shift, and go to state 39
+    tAGAIN       shift, and go to state 40
+    tIF          shift, and go to state 41
+    tELSE        shift, and go to state 42
+    tINPUT       shift, and go to state 43
+    tWRITE       shift, and go to state 44
+    tWRITELN     shift, and go to state 45
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    stmt         go to state 90
+    rec_fun_cal  go to state 63
+    expr         go to state 64
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 43
+
+   61 stmt: tINPUT . ';'
+
+    ';'  shift, and go to state 91
+
+
+State 44
+
+   65 stmt: tWRITE . expressions ';'
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expressions  go to state 92
+    expr         go to state 93
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 45
+
+   66 stmt: tWRITELN . expressions ';'
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expressions  go to state 94
+    expr         go to state 93
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 46
+
+  116 lval: tIDENTIFIER .
+
+    $default  reduce using rule 116 (lval)
+
+
+State 47
+
+  120 string: tSTRING .
+
+    $default  reduce using rule 120 (string)
+
+
+State 48
+
+   87 expr: tNULLPTR .
+
+    $default  reduce using rule 87 (expr)
+
+
+State 49
+
+   94 expr: '+' . expr
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 95
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 50
+
+   92 expr: '-' . '-' expr
+   93     | '-' . expr
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 96
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 97
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 51
+
+   49 basic_type: '[' . data_type ']'
+   90 expr: '[' . expr ']'
+
+    tINTEGER      shift, and go to state 33
+    tREAL         shift, and go to state 34
+    tSIZEOF       shift, and go to state 35
+    tNOT          shift, and go to state 36
+    tTYPE_STRING  shift, and go to state 2
+    tTYPE_INT     shift, and go to state 3
+    tTYPE_REAL    shift, and go to state 4
+    tTYPE_VOID    shift, and go to state 5
+    tIDENTIFIER   shift, and go to state 46
+    tSTRING       shift, and go to state 47
+    tNULLPTR      shift, and go to state 48
+    '+'           shift, and go to state 49
+    '-'           shift, and go to state 50
+    '['           shift, and go to state 51
+    '('           shift, and go to state 52
+    '@'           shift, and go to state 53
+
+    fundeff        go to state 55
+    data_type      go to state 26
+    basic_type     go to state 20
+    function_type  go to state 21
+    rec_fun_cal    go to state 83
+    expr           go to state 98
+    lval           go to state 65
+    integer        go to state 66
+    real           go to state 67
+    string         go to state 68
+
+
+State 52
+
+   12 fundeff: '(' . argdecs ')' '-' '>' data_type ':' block
+   96 expr: '(' . fundeff ')' expr
+  110     | '(' . expr ')'
+
+    tINTEGER      shift, and go to state 33
+    tREAL         shift, and go to state 34
+    tSIZEOF       shift, and go to state 35
+    tNOT          shift, and go to state 36
+    tTYPE_STRING  shift, and go to state 2
+    tTYPE_INT     shift, and go to state 3
+    tTYPE_REAL    shift, and go to state 4
+    tTYPE_VOID    shift, and go to state 5
+    tIDENTIFIER   shift, and go to state 46
+    tSTRING       shift, and go to state 47
+    tNULLPTR      shift, and go to state 48
+    '+'           shift, and go to state 49
+    '-'           shift, and go to state 50
+    '['           shift, and go to state 51
+    '('           shift, and go to state 52
+    '@'           shift, and go to state 53
+
+    $default  reduce using rule 39 (argdecs)
+
+    fundeff        go to state 99
+    argdecs        go to state 100
+    argdec         go to state 101
+    data_type      go to state 102
+    basic_type     go to state 20
+    function_type  go to state 21
+    rec_fun_cal    go to state 83
+    expr           go to state 103
+    lval           go to state 65
+    integer        go to state 66
+    real           go to state 67
+    string         go to state 68
+
+
+State 53
+
+   77 rec_fun_cal: '@' . '(' funcal_exr ')'
+   78            | '@' . '(' ')'
+
+    '('  shift, and go to state 104
+
+
+State 54
+
+   31 vardecs: fundec . ';'
+
+    ';'  shift, and go to state 105
+
+
+State 55
+
+   97 expr: fundeff .
+
+    $default  reduce using rule 97 (expr)
+
+
+State 56
+
+   30 vardecs: fundef .
+
+    $default  reduce using rule 30 (vardecs)
+
+
+State 57
+
+   28 vardecs: vardec . ';'
+   29        | vardec .
+
+    ';'  shift, and go to state 106
+
+    $default  reduce using rule 29 (vardecs)
+
+
+State 58
+
+   23 block: '{' opt_vardecs . opt_instructions '}'
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tWHILE       shift, and go to state 37
+    tRETURN      shift, and go to state 38
+    tSTOP        shift, and go to state 39
+    tAGAIN       shift, and go to state 40
+    tIF          shift, and go to state 41
+    tELSE        shift, and go to state 42
+    tINPUT       shift, and go to state 43
+    tWRITE       shift, and go to state 44
+    tWRITELN     shift, and go to state 45
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    $default  reduce using rule 26 (opt_instructions)
+
+    fundeff           go to state 55
+    opt_instructions  go to state 107
+    instructions      go to state 61
+    stmt              go to state 62
+    rec_fun_cal       go to state 63
+    expr              go to state 64
+    lval              go to state 65
+    integer           go to state 66
+    real              go to state 67
+    string            go to state 68
+
+
+State 59
+
+   22 block: '{' opt_instructions . '}'
+
+    '}'  shift, and go to state 108
+
+
+State 60
+
+   25 opt_vardecs: vardecs .
+   32 vardecs: vardecs . vardec ';'
+   33        | vardecs . fundec ';'
+   34        | vardecs . vardec
+   35        | vardecs . fundef
+   36        | vardecs . fundec
+
+    tTYPE_STRING  shift, and go to state 2
+    tTYPE_INT     shift, and go to state 3
+    tTYPE_REAL    shift, and go to state 4
+    tTYPE_VOID    shift, and go to state 5
+    tPUBLIC       shift, and go to state 6
+    tUSE          shift, and go to state 7
+    tFOREIGN      shift, and go to state 8
+    tVAR          shift, and go to state 9
+    '['           shift, and go to state 10
+
+    '['       [reduce using rule 25 (opt_vardecs)]
+    $default  reduce using rule 25 (opt_vardecs)
+
+    fundec         go to state 109
+    fundef         go to state 110
+    vardec         go to state 111
+    identifiers    go to state 17
+    data_type      go to state 19
+    basic_type     go to state 20
+    function_type  go to state 21
+
+
+State 61
+
+   27 opt_instructions: instructions .
+   38 instructions: instructions . stmt
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tWHILE       shift, and go to state 37
+    tRETURN      shift, and go to state 38
+    tSTOP        shift, and go to state 39
+    tAGAIN       shift, and go to state 40
+    tIF          shift, and go to state 41
+    tELSE        shift, and go to state 42
+    tINPUT       shift, and go to state 43
+    tWRITE       shift, and go to state 44
+    tWRITELN     shift, and go to state 45
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    $default  reduce using rule 27 (opt_instructions)
+
+    fundeff      go to state 55
+    stmt         go to state 112
+    rec_fun_cal  go to state 63
+    expr         go to state 64
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 62
+
+   37 instructions: stmt .
+
+    $default  reduce using rule 37 (instructions)
+
+
+State 63
+
+   67 stmt: rec_fun_cal . ';'
+  115 expr: rec_fun_cal .
+
+    ';'  shift, and go to state 113
+
+    ';'       [reduce using rule 115 (expr)]
+    $default  reduce using rule 115 (expr)
+
+
+State 64
+
+   54 stmt: expr . ';'
+   55     | expr .
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    tAND  shift, and go to state 114
+    tOR   shift, and go to state 115
+    tNE   shift, and go to state 116
+    tLE   shift, and go to state 117
+    tGE   shift, and go to state 118
+    tEQ   shift, and go to state 119
+    '<'   shift, and go to state 120
+    '>'   shift, and go to state 121
+    '+'   shift, and go to state 122
+    '-'   shift, and go to state 123
+    '*'   shift, and go to state 124
+    '/'   shift, and go to state 125
+    '%'   shift, and go to state 126
+    '['   shift, and go to state 127
+    ';'   shift, and go to state 128
+
+    '+'       [reduce using rule 55 (stmt)]
+    '-'       [reduce using rule 55 (stmt)]
+    '['       [reduce using rule 55 (stmt)]
+    $default  reduce using rule 55 (stmt)
+
+
+State 65
+
+   91 expr: lval . '=' expr
+  111     | lval .
+  112     | lval . '?'
+  113     | lval . '(' funcal_exr ')'
+  114     | lval . '(' ')'
+
+    '='  shift, and go to state 129
+    '('  shift, and go to state 130
+    '?'  shift, and go to state 131
+
+    '('       [reduce using rule 111 (expr)]
+    $default  reduce using rule 111 (expr)
+
+
+State 66
+
+   84 expr: integer .
+
+    $default  reduce using rule 84 (expr)
+
+
+State 67
+
+   85 expr: real .
+
+    $default  reduce using rule 85 (expr)
+
+
+State 68
+
+   86 expr: string .
+  121 string: string . tSTRING
+
+    tSTRING  shift, and go to state 132
+
+    tSTRING   [reduce using rule 86 (expr)]
+    $default  reduce using rule 86 (expr)
+
+
+State 69
+
+   21 program: tBEGIN block tEND .
+
+    $default  reduce using rule 21 (program)
+
+
+State 70
+
+   11 fundec: tUSE data_type tIDENTIFIER .
+
+    $default  reduce using rule 11 (fundec)
+
+
+State 71
+
+    9 fundec: tFOREIGN data_type tIDENTIFIER .
+
+    $default  reduce using rule 9 (fundec)
+
+
+State 72
+
+   49 basic_type: '[' data_type ']' .
+
+    $default  reduce using rule 49 (basic_type)
+
+
+State 73
+
+   13 fundef: identifiers tIDENTIFIER '=' . fundeff
+   18 opt_initializer: '=' . expr
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 133
+    rec_fun_cal  go to state 83
+    expr         go to state 134
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 74
+
+   16 vardec: identifiers tIDENTIFIER opt_initializer .
+
+    $default  reduce using rule 16 (vardec)
+
+
+State 75
+
+   14 vardec: identifiers data_type tIDENTIFIER . opt_initializer
+
+    '='  shift, and go to state 76
+
+    $default  reduce using rule 17 (opt_initializer)
+
+    opt_initializer  go to state 135
+
+
+State 76
+
+   18 opt_initializer: '=' . expr
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 134
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 77
+
+   15 vardec: data_type tIDENTIFIER opt_initializer .
+
+    $default  reduce using rule 15 (vardec)
+
+
+State 78
+
+   51 function_type: data_type '<' '>' .
+
+    $default  reduce using rule 51 (function_type)
+
+
+State 79
+
+   50 function_type: data_type . '<' data_types '>'
+   51              | data_type . '<' '>'
+   52 data_types: data_type .
+
+    '<'  shift, and go to state 32
+
+    $default  reduce using rule 52 (data_types)
+
+
+State 80
+
+   50 function_type: data_type '<' data_types . '>'
+   53 data_types: data_types . ',' data_type
+
+    '>'  shift, and go to state 136
+    ','  shift, and go to state 137
+
+
+State 81
+
+   89 expr: tSIZEOF '(' . expr ')'
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 138
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 82
+
+   90 expr: '[' . expr ']'
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 98
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 83
+
+  115 expr: rec_fun_cal .
+
+    $default  reduce using rule 115 (expr)
+
+
+State 84
+
+   88 expr: tNOT expr .
+   95     | expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    tNE  shift, and go to state 116
+    tLE  shift, and go to state 117
+    tGE  shift, and go to state 118
+    tEQ  shift, and go to state 119
+    '<'  shift, and go to state 120
+    '>'  shift, and go to state 121
+    '+'  shift, and go to state 122
+    '-'  shift, and go to state 123
+    '*'  shift, and go to state 124
+    '/'  shift, and go to state 125
+    '%'  shift, and go to state 126
+    '['  shift, and go to state 127
+
+    $default  reduce using rule 88 (expr)
+
+
+State 85
+
+   58 stmt: tWHILE '(' . expr ')' tDO block
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 139
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 86
+
+   62 stmt: tRETURN expr . ';'
+   63     | tRETURN expr .
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    tAND  shift, and go to state 114
+    tOR   shift, and go to state 115
+    tNE   shift, and go to state 116
+    tLE   shift, and go to state 117
+    tGE   shift, and go to state 118
+    tEQ   shift, and go to state 119
+    '<'   shift, and go to state 120
+    '>'   shift, and go to state 121
+    '+'   shift, and go to state 122
+    '-'   shift, and go to state 123
+    '*'   shift, and go to state 124
+    '/'   shift, and go to state 125
+    '%'   shift, and go to state 126
+    '['   shift, and go to state 127
+    ';'   shift, and go to state 140
+
+    '+'       [reduce using rule 63 (stmt)]
+    '-'       [reduce using rule 63 (stmt)]
+    '['       [reduce using rule 63 (stmt)]
+    $default  reduce using rule 63 (stmt)
+
+
+State 87
+
+   59 stmt: tSTOP ';' .
+
+    $default  reduce using rule 59 (stmt)
+
+
+State 88
+
+   60 stmt: tAGAIN ';' .
+
+    $default  reduce using rule 60 (stmt)
+
+
+State 89
+
+   56 stmt: tIF expr . tTHEN block
+   57     | tIF expr . tTHEN block elif
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    tAND   shift, and go to state 114
+    tOR    shift, and go to state 115
+    tNE    shift, and go to state 116
+    tLE    shift, and go to state 117
+    tGE    shift, and go to state 118
+    tTHEN  shift, and go to state 141
+    tEQ    shift, and go to state 119
+    '<'    shift, and go to state 120
+    '>'    shift, and go to state 121
+    '+'    shift, and go to state 122
+    '-'    shift, and go to state 123
+    '*'    shift, and go to state 124
+    '/'    shift, and go to state 125
+    '%'    shift, and go to state 126
+    '['    shift, and go to state 127
+
+
+State 90
+
+   64 stmt: tELSE stmt .
+
+    $default  reduce using rule 64 (stmt)
+
+
+State 91
+
+   61 stmt: tINPUT ';' .
+
+    $default  reduce using rule 61 (stmt)
+
+
+State 92
+
+   65 stmt: tWRITE expressions . ';'
+   83 expressions: expressions . ',' expr
+
+    ';'  shift, and go to state 142
+    ','  shift, and go to state 143
+
+
+State 93
+
+   82 expressions: expr .
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    tAND  shift, and go to state 114
+    tOR   shift, and go to state 115
+    tNE   shift, and go to state 116
+    tLE   shift, and go to state 117
+    tGE   shift, and go to state 118
+    tEQ   shift, and go to state 119
+    '<'   shift, and go to state 120
+    '>'   shift, and go to state 121
+    '+'   shift, and go to state 122
+    '-'   shift, and go to state 123
+    '*'   shift, and go to state 124
+    '/'   shift, and go to state 125
+    '%'   shift, and go to state 126
+    '['   shift, and go to state 127
+
+    $default  reduce using rule 82 (expressions)
+
+
+State 94
+
+   66 stmt: tWRITELN expressions . ';'
+   83 expressions: expressions . ',' expr
+
+    ';'  shift, and go to state 144
+    ','  shift, and go to state 143
+
+
+State 95
+
+   94 expr: '+' expr .
+   95     | expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    $default  reduce using rule 94 (expr)
+
+
+State 96
+
+   92 expr: '-' . '-' expr
+   92     | '-' '-' . expr
+   93     | '-' . expr
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 96
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 145
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 97
+
+   93 expr: '-' expr .
+   95     | expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    $default  reduce using rule 93 (expr)
+
+
+State 98
+
+   90 expr: '[' expr . ']'
+   95     | expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    tAND  shift, and go to state 114
+    tOR   shift, and go to state 115
+    tNE   shift, and go to state 116
+    tLE   shift, and go to state 117
+    tGE   shift, and go to state 118
+    tEQ   shift, and go to state 119
+    '<'   shift, and go to state 120
+    '>'   shift, and go to state 121
+    '+'   shift, and go to state 122
+    '-'   shift, and go to state 123
+    '*'   shift, and go to state 124
+    '/'   shift, and go to state 125
+    '%'   shift, and go to state 126
+    '['   shift, and go to state 127
+    ']'   shift, and go to state 146
+
+
+State 99
+
+   96 expr: '(' fundeff . ')' expr
+   97     | fundeff .
+
+    ')'  shift, and go to state 147
+
+    ')'       [reduce using rule 97 (expr)]
+    $default  reduce using rule 97 (expr)
+
+
+State 100
+
+   12 fundeff: '(' argdecs . ')' '-' '>' data_type ':' block
+   41 argdecs: argdecs . ',' argdec
+
+    ')'  shift, and go to state 148
+    ','  shift, and go to state 149
+
+
+State 101
+
+   40 argdecs: argdec .
+
+    $default  reduce using rule 40 (argdecs)
+
+
+State 102
+
+   42 argdec: data_type . tIDENTIFIER
+   50 function_type: data_type . '<' data_types '>'
+   51              | data_type . '<' '>'
+
+    tIDENTIFIER  shift, and go to state 150
+    '<'          shift, and go to state 32
+
+
+State 103
+
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  110     | '(' expr . ')'
+  117 lval: expr . '[' expr ']'
+
+    tAND  shift, and go to state 114
+    tOR   shift, and go to state 115
+    tNE   shift, and go to state 116
+    tLE   shift, and go to state 117
+    tGE   shift, and go to state 118
+    tEQ   shift, and go to state 119
+    '<'   shift, and go to state 120
+    '>'   shift, and go to state 121
+    '+'   shift, and go to state 122
+    '-'   shift, and go to state 123
+    '*'   shift, and go to state 124
+    '/'   shift, and go to state 125
+    '%'   shift, and go to state 126
+    '['   shift, and go to state 127
+    ')'   shift, and go to state 151
+
+
+State 104
+
+   77 rec_fun_cal: '@' '(' . funcal_exr ')'
+   78            | '@' '(' . ')'
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tPUBLIC      shift, and go to state 6
+    tVAR         shift, and go to state 9
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 152
+    ')'          shift, and go to state 153
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    fundef       go to state 154
+    identifiers  go to state 155
+    funcal_exr   go to state 156
+    rec_fun_cal  go to state 83
+    expr         go to state 157
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 105
+
+   31 vardecs: fundec ';' .
+
+    $default  reduce using rule 31 (vardecs)
+
+
+State 106
+
+   28 vardecs: vardec ';' .
+
+    $default  reduce using rule 28 (vardecs)
+
+
+State 107
+
+   23 block: '{' opt_vardecs opt_instructions . '}'
+
+    '}'  shift, and go to state 158
+
+
+State 108
+
+   22 block: '{' opt_instructions '}' .
+
+    $default  reduce using rule 22 (block)
+
+
+State 109
+
+   33 vardecs: vardecs fundec . ';'
+   36        | vardecs fundec .
+
+    ';'  shift, and go to state 159
+
+    $default  reduce using rule 36 (vardecs)
+
+
+State 110
+
+   35 vardecs: vardecs fundef .
+
+    $default  reduce using rule 35 (vardecs)
+
+
+State 111
+
+   32 vardecs: vardecs vardec . ';'
+   34        | vardecs vardec .
+
+    ';'  shift, and go to state 160
+
+    $default  reduce using rule 34 (vardecs)
+
+
+State 112
+
+   38 instructions: instructions stmt .
+
+    $default  reduce using rule 38 (instructions)
+
+
+State 113
+
+   67 stmt: rec_fun_cal ';' .
+
+    $default  reduce using rule 67 (stmt)
+
+
+State 114
+
+  108 expr: expr tAND . expr
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 161
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 115
+
+  109 expr: expr tOR . expr
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 162
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 116
+
+  106 expr: expr tNE . expr
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 163
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 117
+
+  105 expr: expr tLE . expr
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 164
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 118
+
+  104 expr: expr tGE . expr
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 165
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 119
+
+  107 expr: expr tEQ . expr
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 166
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 120
+
+  102 expr: expr '<' . expr
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 167
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 121
+
+  103 expr: expr '>' . expr
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 168
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 122
+
+   95 expr: expr '+' . expr
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 169
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 123
+
+   98 expr: expr '-' . expr
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 170
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 124
+
+   99 expr: expr '*' . expr
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 171
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 125
+
+  100 expr: expr '/' . expr
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 172
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 126
+
+  101 expr: expr '%' . expr
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 173
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 127
+
+  117 lval: expr '[' . expr ']'
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 174
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 128
+
+   54 stmt: expr ';' .
+
+    $default  reduce using rule 54 (stmt)
+
+
+State 129
+
+   91 expr: lval '=' . expr
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 175
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 130
+
+  113 expr: lval '(' . funcal_exr ')'
+  114     | lval '(' . ')'
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tPUBLIC      shift, and go to state 6
+    tVAR         shift, and go to state 9
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 152
+    ')'          shift, and go to state 176
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    fundef       go to state 154
+    identifiers  go to state 155
+    funcal_exr   go to state 177
+    rec_fun_cal  go to state 83
+    expr         go to state 157
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 131
+
+  112 expr: lval '?' .
+
+    $default  reduce using rule 112 (expr)
+
+
+State 132
+
+  121 string: string tSTRING .
+
+    $default  reduce using rule 121 (string)
+
+
+State 133
+
+   13 fundef: identifiers tIDENTIFIER '=' fundeff .
+   97 expr: fundeff .
+
+    $end          reduce using rule 13 (fundef)
+    $end          [reduce using rule 97 (expr)]
+    tINTEGER      reduce using rule 13 (fundef)
+    tINTEGER      [reduce using rule 97 (expr)]
+    tREAL         reduce using rule 13 (fundef)
+    tREAL         [reduce using rule 97 (expr)]
+    tAND          reduce using rule 97 (expr)
+    tOR           reduce using rule 97 (expr)
+    tNE           reduce using rule 97 (expr)
+    tLE           reduce using rule 97 (expr)
+    tGE           reduce using rule 97 (expr)
+    tSIZEOF       reduce using rule 13 (fundef)
+    tSIZEOF       [reduce using rule 97 (expr)]
+    tNOT          reduce using rule 13 (fundef)
+    tNOT          [reduce using rule 97 (expr)]
+    tWHILE        reduce using rule 13 (fundef)
+    tWHILE        [reduce using rule 97 (expr)]
+    tBEGIN        reduce using rule 13 (fundef)
+    tBEGIN        [reduce using rule 97 (expr)]
+    tTYPE_STRING  reduce using rule 13 (fundef)
+    tTYPE_STRING  [reduce using rule 97 (expr)]
+    tTYPE_INT     reduce using rule 13 (fundef)
+    tTYPE_INT     [reduce using rule 97 (expr)]
+    tTYPE_REAL    reduce using rule 13 (fundef)
+    tTYPE_REAL    [reduce using rule 97 (expr)]
+    tTYPE_VOID    reduce using rule 13 (fundef)
+    tTYPE_VOID    [reduce using rule 97 (expr)]
+    tRETURN       reduce using rule 13 (fundef)
+    tRETURN       [reduce using rule 97 (expr)]
+    tPUBLIC       reduce using rule 13 (fundef)
+    tPUBLIC       [reduce using rule 97 (expr)]
+    tUSE          reduce using rule 13 (fundef)
+    tUSE          [reduce using rule 97 (expr)]
+    tFOREIGN      reduce using rule 13 (fundef)
+    tFOREIGN      [reduce using rule 97 (expr)]
+    tVAR          reduce using rule 13 (fundef)
+    tVAR          [reduce using rule 97 (expr)]
+    tSTOP         reduce using rule 13 (fundef)
+    tSTOP         [reduce using rule 97 (expr)]
+    tAGAIN        reduce using rule 13 (fundef)
+    tAGAIN        [reduce using rule 97 (expr)]
+    tIF           reduce using rule 13 (fundef)
+    tIF           [reduce using rule 97 (expr)]
+    tELSE         reduce using rule 13 (fundef)
+    tELSE         [reduce using rule 97 (expr)]
+    tINPUT        reduce using rule 13 (fundef)
+    tINPUT        [reduce using rule 97 (expr)]
+    tWRITE        reduce using rule 13 (fundef)
+    tWRITE        [reduce using rule 97 (expr)]
+    tWRITELN      reduce using rule 13 (fundef)
+    tWRITELN      [reduce using rule 97 (expr)]
+    tIDENTIFIER   reduce using rule 13 (fundef)
+    tIDENTIFIER   [reduce using rule 97 (expr)]
+    tSTRING       reduce using rule 13 (fundef)
+    tSTRING       [reduce using rule 97 (expr)]
+    tNULLPTR      reduce using rule 13 (fundef)
+    tNULLPTR      [reduce using rule 97 (expr)]
+    tEQ           reduce using rule 97 (expr)
+    '<'           reduce using rule 97 (expr)
+    '>'           reduce using rule 97 (expr)
+    '+'           reduce using rule 13 (fundef)
+    '+'           [reduce using rule 97 (expr)]
+    '-'           reduce using rule 13 (fundef)
+    '-'           [reduce using rule 97 (expr)]
+    '*'           reduce using rule 97 (expr)
+    '/'           reduce using rule 97 (expr)
+    '%'           reduce using rule 97 (expr)
+    '['           reduce using rule 13 (fundef)
+    '['           [reduce using rule 97 (expr)]
+    '('           reduce using rule 13 (fundef)
+    '('           [reduce using rule 97 (expr)]
+    '}'           reduce using rule 13 (fundef)
+    '}'           [reduce using rule 97 (expr)]
+    ';'           reduce using rule 97 (expr)
+    '@'           reduce using rule 13 (fundef)
+    '@'           [reduce using rule 97 (expr)]
+    $default      reduce using rule 13 (fundef)
+
+
+State 134
+
+   18 opt_initializer: '=' expr .
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    tAND  shift, and go to state 114
+    tOR   shift, and go to state 115
+    tNE   shift, and go to state 116
+    tLE   shift, and go to state 117
+    tGE   shift, and go to state 118
+    tEQ   shift, and go to state 119
+    '<'   shift, and go to state 120
+    '>'   shift, and go to state 121
+    '+'   shift, and go to state 122
+    '-'   shift, and go to state 123
+    '*'   shift, and go to state 124
+    '/'   shift, and go to state 125
+    '%'   shift, and go to state 126
+    '['   shift, and go to state 127
+
+    $default  reduce using rule 18 (opt_initializer)
+
+
+State 135
+
+   14 vardec: identifiers data_type tIDENTIFIER opt_initializer .
+
+    $default  reduce using rule 14 (vardec)
+
+
+State 136
+
+   50 function_type: data_type '<' data_types '>' .
+
+    $default  reduce using rule 50 (function_type)
+
+
+State 137
+
+   53 data_types: data_types ',' . data_type
+
+    tTYPE_STRING  shift, and go to state 2
+    tTYPE_INT     shift, and go to state 3
+    tTYPE_REAL    shift, and go to state 4
+    tTYPE_VOID    shift, and go to state 5
+    '['           shift, and go to state 10
+
+    data_type      go to state 178
+    basic_type     go to state 20
+    function_type  go to state 21
+
+
+State 138
+
+   89 expr: tSIZEOF '(' expr . ')'
+   95     | expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    tAND  shift, and go to state 114
+    tOR   shift, and go to state 115
+    tNE   shift, and go to state 116
+    tLE   shift, and go to state 117
+    tGE   shift, and go to state 118
+    tEQ   shift, and go to state 119
+    '<'   shift, and go to state 120
+    '>'   shift, and go to state 121
+    '+'   shift, and go to state 122
+    '-'   shift, and go to state 123
+    '*'   shift, and go to state 124
+    '/'   shift, and go to state 125
+    '%'   shift, and go to state 126
+    '['   shift, and go to state 127
+    ')'   shift, and go to state 179
+
+
+State 139
+
+   58 stmt: tWHILE '(' expr . ')' tDO block
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    tAND  shift, and go to state 114
+    tOR   shift, and go to state 115
+    tNE   shift, and go to state 116
+    tLE   shift, and go to state 117
+    tGE   shift, and go to state 118
+    tEQ   shift, and go to state 119
+    '<'   shift, and go to state 120
+    '>'   shift, and go to state 121
+    '+'   shift, and go to state 122
+    '-'   shift, and go to state 123
+    '*'   shift, and go to state 124
+    '/'   shift, and go to state 125
+    '%'   shift, and go to state 126
+    '['   shift, and go to state 127
+    ')'   shift, and go to state 180
+
+
+State 140
+
+   62 stmt: tRETURN expr ';' .
+
+    $default  reduce using rule 62 (stmt)
+
+
+State 141
+
+   56 stmt: tIF expr tTHEN . block
+   57     | tIF expr tTHEN . block elif
+
+    '{'  shift, and go to state 22
+
+    block  go to state 181
+
+
+State 142
+
+   65 stmt: tWRITE expressions ';' .
+
+    $default  reduce using rule 65 (stmt)
+
+
+State 143
+
+   83 expressions: expressions ',' . expr
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 182
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 144
+
+   66 stmt: tWRITELN expressions ';' .
+
+    $default  reduce using rule 66 (stmt)
+
+
+State 145
+
+   92 expr: '-' '-' expr .
+   93     | '-' expr .
+   95     | expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    $end          reduce using rule 92 (expr)
+    $end          [reduce using rule 93 (expr)]
+    tINTEGER      reduce using rule 92 (expr)
+    tINTEGER      [reduce using rule 93 (expr)]
+    tREAL         reduce using rule 92 (expr)
+    tREAL         [reduce using rule 93 (expr)]
+    tAND          reduce using rule 92 (expr)
+    tAND          [reduce using rule 93 (expr)]
+    tOR           reduce using rule 92 (expr)
+    tOR           [reduce using rule 93 (expr)]
+    tNE           reduce using rule 92 (expr)
+    tNE           [reduce using rule 93 (expr)]
+    tLE           reduce using rule 92 (expr)
+    tLE           [reduce using rule 93 (expr)]
+    tGE           reduce using rule 92 (expr)
+    tGE           [reduce using rule 93 (expr)]
+    tSIZEOF       reduce using rule 92 (expr)
+    tSIZEOF       [reduce using rule 93 (expr)]
+    tNOT          reduce using rule 92 (expr)
+    tNOT          [reduce using rule 93 (expr)]
+    tWHILE        reduce using rule 92 (expr)
+    tWHILE        [reduce using rule 93 (expr)]
+    tBEGIN        reduce using rule 92 (expr)
+    tBEGIN        [reduce using rule 93 (expr)]
+    tTYPE_STRING  reduce using rule 92 (expr)
+    tTYPE_STRING  [reduce using rule 93 (expr)]
+    tTYPE_INT     reduce using rule 92 (expr)
+    tTYPE_INT     [reduce using rule 93 (expr)]
+    tTYPE_REAL    reduce using rule 92 (expr)
+    tTYPE_REAL    [reduce using rule 93 (expr)]
+    tTYPE_VOID    reduce using rule 92 (expr)
+    tTYPE_VOID    [reduce using rule 93 (expr)]
+    tRETURN       reduce using rule 92 (expr)
+    tRETURN       [reduce using rule 93 (expr)]
+    tPUBLIC       reduce using rule 92 (expr)
+    tPUBLIC       [reduce using rule 93 (expr)]
+    tUSE          reduce using rule 92 (expr)
+    tUSE          [reduce using rule 93 (expr)]
+    tFOREIGN      reduce using rule 92 (expr)
+    tFOREIGN      [reduce using rule 93 (expr)]
+    tVAR          reduce using rule 92 (expr)
+    tVAR          [reduce using rule 93 (expr)]
+    tSTOP         reduce using rule 92 (expr)
+    tSTOP         [reduce using rule 93 (expr)]
+    tAGAIN        reduce using rule 92 (expr)
+    tAGAIN        [reduce using rule 93 (expr)]
+    tIF           reduce using rule 92 (expr)
+    tIF           [reduce using rule 93 (expr)]
+    tTHEN         reduce using rule 92 (expr)
+    tTHEN         [reduce using rule 93 (expr)]
+    tELSE         reduce using rule 92 (expr)
+    tELSE         [reduce using rule 93 (expr)]
+    tINPUT        reduce using rule 92 (expr)
+    tINPUT        [reduce using rule 93 (expr)]
+    tWRITE        reduce using rule 92 (expr)
+    tWRITE        [reduce using rule 93 (expr)]
+    tWRITELN      reduce using rule 92 (expr)
+    tWRITELN      [reduce using rule 93 (expr)]
+    tIDENTIFIER   reduce using rule 92 (expr)
+    tIDENTIFIER   [reduce using rule 93 (expr)]
+    tSTRING       reduce using rule 92 (expr)
+    tSTRING       [reduce using rule 93 (expr)]
+    tNULLPTR      reduce using rule 92 (expr)
+    tNULLPTR      [reduce using rule 93 (expr)]
+    tEQ           reduce using rule 92 (expr)
+    tEQ           [reduce using rule 93 (expr)]
+    '<'           reduce using rule 92 (expr)
+    '<'           [reduce using rule 93 (expr)]
+    '>'           reduce using rule 92 (expr)
+    '>'           [reduce using rule 93 (expr)]
+    '+'           reduce using rule 92 (expr)
+    '+'           [reduce using rule 93 (expr)]
+    '-'           reduce using rule 92 (expr)
+    '-'           [reduce using rule 93 (expr)]
+    '*'           reduce using rule 92 (expr)
+    '*'           [reduce using rule 93 (expr)]
+    '/'           reduce using rule 92 (expr)
+    '/'           [reduce using rule 93 (expr)]
+    '%'           reduce using rule 92 (expr)
+    '%'           [reduce using rule 93 (expr)]
+    '['           reduce using rule 92 (expr)
+    '['           [reduce using rule 93 (expr)]
+    '('           reduce using rule 92 (expr)
+    '('           [reduce using rule 93 (expr)]
+    '}'           reduce using rule 92 (expr)
+    '}'           [reduce using rule 93 (expr)]
+    ']'           reduce using rule 92 (expr)
+    ']'           [reduce using rule 93 (expr)]
+    ')'           reduce using rule 92 (expr)
+    ')'           [reduce using rule 93 (expr)]
+    ';'           reduce using rule 92 (expr)
+    ';'           [reduce using rule 93 (expr)]
+    ','           reduce using rule 92 (expr)
+    ','           [reduce using rule 93 (expr)]
+    '@'           reduce using rule 92 (expr)
+    '@'           [reduce using rule 93 (expr)]
+    $default      reduce using rule 92 (expr)
+
+
+State 146
+
+   90 expr: '[' expr ']' .
+
+    $default  reduce using rule 90 (expr)
+
+
+State 147
+
+   96 expr: '(' fundeff ')' . expr
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 183
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 148
+
+   12 fundeff: '(' argdecs ')' . '-' '>' data_type ':' block
+
+    '-'  shift, and go to state 184
+
+
+State 149
+
+   41 argdecs: argdecs ',' . argdec
+
+    tTYPE_STRING  shift, and go to state 2
+    tTYPE_INT     shift, and go to state 3
+    tTYPE_REAL    shift, and go to state 4
+    tTYPE_VOID    shift, and go to state 5
+    '['           shift, and go to state 10
+
+    argdec         go to state 185
+    data_type      go to state 102
+    basic_type     go to state 20
+    function_type  go to state 21
+
+
+State 150
+
+   42 argdec: data_type tIDENTIFIER .
+
+    $default  reduce using rule 42 (argdec)
+
+
+State 151
+
+  110 expr: '(' expr ')' .
+
+    $default  reduce using rule 110 (expr)
+
+
+State 152
+
+   12 fundeff: '(' . argdecs ')' '-' '>' data_type ':' block
+   70 funcal_exr: '(' . expr ')'
+   71           | '(' . fundef ')'
+   96 expr: '(' . fundeff ')' expr
+  110     | '(' . expr ')'
+
+    tINTEGER      shift, and go to state 33
+    tREAL         shift, and go to state 34
+    tSIZEOF       shift, and go to state 35
+    tNOT          shift, and go to state 36
+    tTYPE_STRING  shift, and go to state 2
+    tTYPE_INT     shift, and go to state 3
+    tTYPE_REAL    shift, and go to state 4
+    tTYPE_VOID    shift, and go to state 5
+    tPUBLIC       shift, and go to state 6
+    tVAR          shift, and go to state 9
+    tIDENTIFIER   shift, and go to state 46
+    tSTRING       shift, and go to state 47
+    tNULLPTR      shift, and go to state 48
+    '+'           shift, and go to state 49
+    '-'           shift, and go to state 50
+    '['           shift, and go to state 51
+    '('           shift, and go to state 52
+    '@'           shift, and go to state 53
+
+    $default  reduce using rule 39 (argdecs)
+
+    fundeff        go to state 99
+    fundef         go to state 186
+    identifiers    go to state 155
+    argdecs        go to state 100
+    argdec         go to state 101
+    data_type      go to state 102
+    basic_type     go to state 20
+    function_type  go to state 21
+    rec_fun_cal    go to state 83
+    expr           go to state 187
+    lval           go to state 65
+    integer        go to state 66
+    real           go to state 67
+    string         go to state 68
+
+
+State 153
+
+   78 rec_fun_cal: '@' '(' ')' .
+
+    $default  reduce using rule 78 (rec_fun_cal)
+
+
+State 154
+
+   69 funcal_exr: fundef .
+
+    $default  reduce using rule 69 (funcal_exr)
+
+
+State 155
+
+   13 fundef: identifiers . tIDENTIFIER '=' fundeff
+
+    tIDENTIFIER  shift, and go to state 188
+
+
+State 156
+
+   72 funcal_exr: funcal_exr . ',' fundef
+   73           | funcal_exr . ',' expr
+   74           | funcal_exr . ',' '(' fundef ')'
+   75           | funcal_exr . ',' '(' expr ')'
+   76           | funcal_exr . '(' expr ')'
+   77 rec_fun_cal: '@' '(' funcal_exr . ')'
+
+    '('  shift, and go to state 189
+    ')'  shift, and go to state 190
+    ','  shift, and go to state 191
+
+
+State 157
+
+   68 funcal_exr: expr .
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    tAND  shift, and go to state 114
+    tOR   shift, and go to state 115
+    tNE   shift, and go to state 116
+    tLE   shift, and go to state 117
+    tGE   shift, and go to state 118
+    tEQ   shift, and go to state 119
+    '<'   shift, and go to state 120
+    '>'   shift, and go to state 121
+    '+'   shift, and go to state 122
+    '-'   shift, and go to state 123
+    '*'   shift, and go to state 124
+    '/'   shift, and go to state 125
+    '%'   shift, and go to state 126
+    '['   shift, and go to state 127
+
+    $default  reduce using rule 68 (funcal_exr)
+
+
+State 158
+
+   23 block: '{' opt_vardecs opt_instructions '}' .
+
+    $default  reduce using rule 23 (block)
+
+
+State 159
+
+   33 vardecs: vardecs fundec ';' .
+
+    $default  reduce using rule 33 (vardecs)
+
+
+State 160
+
+   32 vardecs: vardecs vardec ';' .
+
+    $default  reduce using rule 32 (vardecs)
+
+
+State 161
+
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  108     | expr tAND expr .
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    tNE  shift, and go to state 116
+    tLE  shift, and go to state 117
+    tGE  shift, and go to state 118
+    tEQ  shift, and go to state 119
+    '<'  shift, and go to state 120
+    '>'  shift, and go to state 121
+    '+'  shift, and go to state 122
+    '-'  shift, and go to state 123
+    '*'  shift, and go to state 124
+    '/'  shift, and go to state 125
+    '%'  shift, and go to state 126
+    '['  shift, and go to state 127
+
+    $default  reduce using rule 108 (expr)
+
+
+State 162
+
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  109     | expr tOR expr .
+  117 lval: expr . '[' expr ']'
+
+    tAND  shift, and go to state 114
+    tNE   shift, and go to state 116
+    tLE   shift, and go to state 117
+    tGE   shift, and go to state 118
+    tEQ   shift, and go to state 119
+    '<'   shift, and go to state 120
+    '>'   shift, and go to state 121
+    '+'   shift, and go to state 122
+    '-'   shift, and go to state 123
+    '*'   shift, and go to state 124
+    '/'   shift, and go to state 125
+    '%'   shift, and go to state 126
+    '['   shift, and go to state 127
+
+    $default  reduce using rule 109 (expr)
+
+
+State 163
+
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  106     | expr tNE expr .
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    tLE  shift, and go to state 117
+    tGE  shift, and go to state 118
+    '<'  shift, and go to state 120
+    '>'  shift, and go to state 121
+    '+'  shift, and go to state 122
+    '-'  shift, and go to state 123
+    '*'  shift, and go to state 124
+    '/'  shift, and go to state 125
+    '%'  shift, and go to state 126
+    '['  shift, and go to state 127
+
+    $default  reduce using rule 106 (expr)
+
+
+State 164
+
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  105     | expr tLE expr .
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    '+'  shift, and go to state 122
+    '-'  shift, and go to state 123
+    '*'  shift, and go to state 124
+    '/'  shift, and go to state 125
+    '%'  shift, and go to state 126
+    '['  shift, and go to state 127
+
+    $default  reduce using rule 105 (expr)
+
+
+State 165
+
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  104     | expr tGE expr .
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    '+'  shift, and go to state 122
+    '-'  shift, and go to state 123
+    '*'  shift, and go to state 124
+    '/'  shift, and go to state 125
+    '%'  shift, and go to state 126
+    '['  shift, and go to state 127
+
+    $default  reduce using rule 104 (expr)
+
+
+State 166
+
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  107     | expr tEQ expr .
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    tLE  shift, and go to state 117
+    tGE  shift, and go to state 118
+    '<'  shift, and go to state 120
+    '>'  shift, and go to state 121
+    '+'  shift, and go to state 122
+    '-'  shift, and go to state 123
+    '*'  shift, and go to state 124
+    '/'  shift, and go to state 125
+    '%'  shift, and go to state 126
+    '['  shift, and go to state 127
+
+    $default  reduce using rule 107 (expr)
+
+
+State 167
+
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  102     | expr '<' expr .
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    '+'  shift, and go to state 122
+    '-'  shift, and go to state 123
+    '*'  shift, and go to state 124
+    '/'  shift, and go to state 125
+    '%'  shift, and go to state 126
+    '['  shift, and go to state 127
+
+    $default  reduce using rule 102 (expr)
+
+
+State 168
+
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  103     | expr '>' expr .
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    '+'  shift, and go to state 122
+    '-'  shift, and go to state 123
+    '*'  shift, and go to state 124
+    '/'  shift, and go to state 125
+    '%'  shift, and go to state 126
+    '['  shift, and go to state 127
+
+    $default  reduce using rule 103 (expr)
+
+
+State 169
+
+   95 expr: expr . '+' expr
+   95     | expr '+' expr .
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    '*'  shift, and go to state 124
+    '/'  shift, and go to state 125
+    '%'  shift, and go to state 126
+    '['  shift, and go to state 127
+
+    $default  reduce using rule 95 (expr)
+
+
+State 170
+
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   98     | expr '-' expr .
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    '*'  shift, and go to state 124
+    '/'  shift, and go to state 125
+    '%'  shift, and go to state 126
+    '['  shift, and go to state 127
+
+    $default  reduce using rule 98 (expr)
+
+
+State 171
+
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+   99     | expr '*' expr .
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    '['  shift, and go to state 127
+
+    $default  reduce using rule 99 (expr)
+
+
+State 172
+
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  100     | expr '/' expr .
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    '['  shift, and go to state 127
+
+    $default  reduce using rule 100 (expr)
+
+
+State 173
+
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  101     | expr '%' expr .
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    '['  shift, and go to state 127
+
+    $default  reduce using rule 101 (expr)
+
+
+State 174
+
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+  117     | expr '[' expr . ']'
+
+    tAND  shift, and go to state 114
+    tOR   shift, and go to state 115
+    tNE   shift, and go to state 116
+    tLE   shift, and go to state 117
+    tGE   shift, and go to state 118
+    tEQ   shift, and go to state 119
+    '<'   shift, and go to state 120
+    '>'   shift, and go to state 121
+    '+'   shift, and go to state 122
+    '-'   shift, and go to state 123
+    '*'   shift, and go to state 124
+    '/'   shift, and go to state 125
+    '%'   shift, and go to state 126
+    '['   shift, and go to state 127
+    ']'   shift, and go to state 192
+
+
+State 175
+
+   91 expr: lval '=' expr .
+   95     | expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    tAND  shift, and go to state 114
+    tOR   shift, and go to state 115
+    tNE   shift, and go to state 116
+    tLE   shift, and go to state 117
+    tGE   shift, and go to state 118
+    tEQ   shift, and go to state 119
+    '<'   shift, and go to state 120
+    '>'   shift, and go to state 121
+    '+'   shift, and go to state 122
+    '-'   shift, and go to state 123
+    '*'   shift, and go to state 124
+    '/'   shift, and go to state 125
+    '%'   shift, and go to state 126
+    '['   shift, and go to state 127
+
+    $default  reduce using rule 91 (expr)
+
+
+State 176
+
+  114 expr: lval '(' ')' .
+
+    $default  reduce using rule 114 (expr)
+
+
+State 177
+
+   72 funcal_exr: funcal_exr . ',' fundef
+   73           | funcal_exr . ',' expr
+   74           | funcal_exr . ',' '(' fundef ')'
+   75           | funcal_exr . ',' '(' expr ')'
+   76           | funcal_exr . '(' expr ')'
+  113 expr: lval '(' funcal_exr . ')'
+
+    '('  shift, and go to state 189
+    ')'  shift, and go to state 193
+    ','  shift, and go to state 191
+
+
+State 178
+
+   50 function_type: data_type . '<' data_types '>'
+   51              | data_type . '<' '>'
+   53 data_types: data_types ',' data_type .
+
+    '<'  shift, and go to state 32
+
+    $default  reduce using rule 53 (data_types)
+
+
+State 179
+
+   89 expr: tSIZEOF '(' expr ')' .
+
+    $default  reduce using rule 89 (expr)
+
+
+State 180
+
+   58 stmt: tWHILE '(' expr ')' . tDO block
+
+    tDO  shift, and go to state 194
+
+
+State 181
+
+   56 stmt: tIF expr tTHEN block .
+   57     | tIF expr tTHEN block . elif
+
+    tELIF  shift, and go to state 195
+    tELSE  shift, and go to state 196
+
+    $default  reduce using rule 56 (stmt)
+
+    elif  go to state 197
+
+
+State 182
+
+   83 expressions: expressions ',' expr .
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    tAND  shift, and go to state 114
+    tOR   shift, and go to state 115
+    tNE   shift, and go to state 116
+    tLE   shift, and go to state 117
+    tGE   shift, and go to state 118
+    tEQ   shift, and go to state 119
+    '<'   shift, and go to state 120
+    '>'   shift, and go to state 121
+    '+'   shift, and go to state 122
+    '-'   shift, and go to state 123
+    '*'   shift, and go to state 124
+    '/'   shift, and go to state 125
+    '%'   shift, and go to state 126
+    '['   shift, and go to state 127
+
+    $default  reduce using rule 83 (expressions)
+
+
+State 183
+
+   95 expr: expr . '+' expr
+   96     | '(' fundeff ')' expr .
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    $default  reduce using rule 96 (expr)
+
+
+State 184
+
+   12 fundeff: '(' argdecs ')' '-' . '>' data_type ':' block
+
+    '>'  shift, and go to state 198
+
+
+State 185
+
+   41 argdecs: argdecs ',' argdec .
+
+    $default  reduce using rule 41 (argdecs)
+
+
+State 186
+
+   71 funcal_exr: '(' fundef . ')'
+
+    ')'  shift, and go to state 199
+
+
+State 187
+
+   70 funcal_exr: '(' expr . ')'
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  110     | '(' expr . ')'
+  117 lval: expr . '[' expr ']'
+
+    tAND  shift, and go to state 114
+    tOR   shift, and go to state 115
+    tNE   shift, and go to state 116
+    tLE   shift, and go to state 117
+    tGE   shift, and go to state 118
+    tEQ   shift, and go to state 119
+    '<'   shift, and go to state 120
+    '>'   shift, and go to state 121
+    '+'   shift, and go to state 122
+    '-'   shift, and go to state 123
+    '*'   shift, and go to state 124
+    '/'   shift, and go to state 125
+    '%'   shift, and go to state 126
+    '['   shift, and go to state 127
+    ')'   shift, and go to state 200
+
+
+State 188
+
+   13 fundef: identifiers tIDENTIFIER . '=' fundeff
+
+    '='  shift, and go to state 201
+
+
+State 189
+
+   76 funcal_exr: funcal_exr '(' . expr ')'
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 202
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 190
+
+   77 rec_fun_cal: '@' '(' funcal_exr ')' .
+
+    $default  reduce using rule 77 (rec_fun_cal)
+
+
+State 191
+
+   72 funcal_exr: funcal_exr ',' . fundef
+   73           | funcal_exr ',' . expr
+   74           | funcal_exr ',' . '(' fundef ')'
+   75           | funcal_exr ',' . '(' expr ')'
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tPUBLIC      shift, and go to state 6
+    tVAR         shift, and go to state 9
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 203
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    fundef       go to state 204
+    identifiers  go to state 155
+    rec_fun_cal  go to state 83
+    expr         go to state 205
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 192
+
+  117 lval: expr '[' expr ']' .
+
+    $default  reduce using rule 117 (lval)
+
+
+State 193
+
+  113 expr: lval '(' funcal_exr ')' .
+
+    $default  reduce using rule 113 (expr)
+
+
+State 194
+
+   58 stmt: tWHILE '(' expr ')' tDO . block
+
+    '{'  shift, and go to state 22
+
+    block  go to state 206
+
+
+State 195
+
+   80 elif: tELIF . expr tTHEN block
+   81     | tELIF . expr tTHEN block elif
+
+    tINTEGER     shift, and go to state 33
+    tREAL        shift, and go to state 34
+    tSIZEOF      shift, and go to state 35
+    tNOT         shift, and go to state 36
+    tIDENTIFIER  shift, and go to state 46
+    tSTRING      shift, and go to state 47
+    tNULLPTR     shift, and go to state 48
+    '+'          shift, and go to state 49
+    '-'          shift, and go to state 50
+    '['          shift, and go to state 82
+    '('          shift, and go to state 52
+    '@'          shift, and go to state 53
+
+    fundeff      go to state 55
+    rec_fun_cal  go to state 83
+    expr         go to state 207
+    lval         go to state 65
+    integer      go to state 66
+    real         go to state 67
+    string       go to state 68
+
+
+State 196
+
+   79 elif: tELSE . block
+
+    '{'  shift, and go to state 22
+
+    block  go to state 208
+
+
+State 197
+
+   57 stmt: tIF expr tTHEN block elif .
+
+    $default  reduce using rule 57 (stmt)
+
+
+State 198
+
+   12 fundeff: '(' argdecs ')' '-' '>' . data_type ':' block
+
+    tTYPE_STRING  shift, and go to state 2
+    tTYPE_INT     shift, and go to state 3
+    tTYPE_REAL    shift, and go to state 4
+    tTYPE_VOID    shift, and go to state 5
+    '['           shift, and go to state 10
+
+    data_type      go to state 209
+    basic_type     go to state 20
+    function_type  go to state 21
+
+
+State 199
+
+   71 funcal_exr: '(' fundef ')' .
+
+    $default  reduce using rule 71 (funcal_exr)
+
+
+State 200
+
+   70 funcal_exr: '(' expr ')' .
+  110 expr: '(' expr ')' .
+
+    '('       reduce using rule 70 (funcal_exr)
+    '('       [reduce using rule 110 (expr)]
+    ')'       reduce using rule 70 (funcal_exr)
+    ')'       [reduce using rule 110 (expr)]
+    ','       reduce using rule 70 (funcal_exr)
+    ','       [reduce using rule 110 (expr)]
+    $default  reduce using rule 110 (expr)
+
+
+State 201
+
+   13 fundef: identifiers tIDENTIFIER '=' . fundeff
+
+    '('  shift, and go to state 210
+
+    fundeff  go to state 211
+
+
+State 202
+
+   76 funcal_exr: funcal_exr '(' expr . ')'
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    tAND  shift, and go to state 114
+    tOR   shift, and go to state 115
+    tNE   shift, and go to state 116
+    tLE   shift, and go to state 117
+    tGE   shift, and go to state 118
+    tEQ   shift, and go to state 119
+    '<'   shift, and go to state 120
+    '>'   shift, and go to state 121
+    '+'   shift, and go to state 122
+    '-'   shift, and go to state 123
+    '*'   shift, and go to state 124
+    '/'   shift, and go to state 125
+    '%'   shift, and go to state 126
+    '['   shift, and go to state 127
+    ')'   shift, and go to state 212
+
+
+State 203
+
+   12 fundeff: '(' . argdecs ')' '-' '>' data_type ':' block
+   74 funcal_exr: funcal_exr ',' '(' . fundef ')'
+   75           | funcal_exr ',' '(' . expr ')'
+   96 expr: '(' . fundeff ')' expr
+  110     | '(' . expr ')'
+
+    tINTEGER      shift, and go to state 33
+    tREAL         shift, and go to state 34
+    tSIZEOF       shift, and go to state 35
+    tNOT          shift, and go to state 36
+    tTYPE_STRING  shift, and go to state 2
+    tTYPE_INT     shift, and go to state 3
+    tTYPE_REAL    shift, and go to state 4
+    tTYPE_VOID    shift, and go to state 5
+    tPUBLIC       shift, and go to state 6
+    tVAR          shift, and go to state 9
+    tIDENTIFIER   shift, and go to state 46
+    tSTRING       shift, and go to state 47
+    tNULLPTR      shift, and go to state 48
+    '+'           shift, and go to state 49
+    '-'           shift, and go to state 50
+    '['           shift, and go to state 51
+    '('           shift, and go to state 52
+    '@'           shift, and go to state 53
+
+    $default  reduce using rule 39 (argdecs)
+
+    fundeff        go to state 99
+    fundef         go to state 213
+    identifiers    go to state 155
+    argdecs        go to state 100
+    argdec         go to state 101
+    data_type      go to state 102
+    basic_type     go to state 20
+    function_type  go to state 21
+    rec_fun_cal    go to state 83
+    expr           go to state 214
+    lval           go to state 65
+    integer        go to state 66
+    real           go to state 67
+    string         go to state 68
+
+
+State 204
+
+   72 funcal_exr: funcal_exr ',' fundef .
+
+    $default  reduce using rule 72 (funcal_exr)
+
+
+State 205
+
+   73 funcal_exr: funcal_exr ',' expr .
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    tAND  shift, and go to state 114
+    tOR   shift, and go to state 115
+    tNE   shift, and go to state 116
+    tLE   shift, and go to state 117
+    tGE   shift, and go to state 118
+    tEQ   shift, and go to state 119
+    '<'   shift, and go to state 120
+    '>'   shift, and go to state 121
+    '+'   shift, and go to state 122
+    '-'   shift, and go to state 123
+    '*'   shift, and go to state 124
+    '/'   shift, and go to state 125
+    '%'   shift, and go to state 126
+    '['   shift, and go to state 127
+
+    $default  reduce using rule 73 (funcal_exr)
+
+
+State 206
+
+   58 stmt: tWHILE '(' expr ')' tDO block .
+
+    $default  reduce using rule 58 (stmt)
+
+
+State 207
+
+   80 elif: tELIF expr . tTHEN block
+   81     | tELIF expr . tTHEN block elif
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  117 lval: expr . '[' expr ']'
+
+    tAND   shift, and go to state 114
+    tOR    shift, and go to state 115
+    tNE    shift, and go to state 116
+    tLE    shift, and go to state 117
+    tGE    shift, and go to state 118
+    tTHEN  shift, and go to state 215
+    tEQ    shift, and go to state 119
+    '<'    shift, and go to state 120
+    '>'    shift, and go to state 121
+    '+'    shift, and go to state 122
+    '-'    shift, and go to state 123
+    '*'    shift, and go to state 124
+    '/'    shift, and go to state 125
+    '%'    shift, and go to state 126
+    '['    shift, and go to state 127
+
+
+State 208
+
+   79 elif: tELSE block .
+
+    $default  reduce using rule 79 (elif)
+
+
+State 209
+
+   12 fundeff: '(' argdecs ')' '-' '>' data_type . ':' block
+   50 function_type: data_type . '<' data_types '>'
+   51              | data_type . '<' '>'
+
+    '<'  shift, and go to state 32
+    ':'  shift, and go to state 216
+
+
+State 210
+
+   12 fundeff: '(' . argdecs ')' '-' '>' data_type ':' block
+
+    tTYPE_STRING  shift, and go to state 2
+    tTYPE_INT     shift, and go to state 3
+    tTYPE_REAL    shift, and go to state 4
+    tTYPE_VOID    shift, and go to state 5
+    '['           shift, and go to state 10
+
+    $default  reduce using rule 39 (argdecs)
+
+    argdecs        go to state 100
+    argdec         go to state 101
+    data_type      go to state 102
+    basic_type     go to state 20
+    function_type  go to state 21
+
+
+State 211
+
+   13 fundef: identifiers tIDENTIFIER '=' fundeff .
+
+    $default  reduce using rule 13 (fundef)
+
+
+State 212
+
+   76 funcal_exr: funcal_exr '(' expr ')' .
+
+    $default  reduce using rule 76 (funcal_exr)
+
+
+State 213
+
+   74 funcal_exr: funcal_exr ',' '(' fundef . ')'
+
+    ')'  shift, and go to state 217
+
+
+State 214
+
+   75 funcal_exr: funcal_exr ',' '(' expr . ')'
+   95 expr: expr . '+' expr
+   98     | expr . '-' expr
+   99     | expr . '*' expr
+  100     | expr . '/' expr
+  101     | expr . '%' expr
+  102     | expr . '<' expr
+  103     | expr . '>' expr
+  104     | expr . tGE expr
+  105     | expr . tLE expr
+  106     | expr . tNE expr
+  107     | expr . tEQ expr
+  108     | expr . tAND expr
+  109     | expr . tOR expr
+  110     | '(' expr . ')'
+  117 lval: expr . '[' expr ']'
+
+    tAND  shift, and go to state 114
+    tOR   shift, and go to state 115
+    tNE   shift, and go to state 116
+    tLE   shift, and go to state 117
+    tGE   shift, and go to state 118
+    tEQ   shift, and go to state 119
+    '<'   shift, and go to state 120
+    '>'   shift, and go to state 121
+    '+'   shift, and go to state 122
+    '-'   shift, and go to state 123
+    '*'   shift, and go to state 124
+    '/'   shift, and go to state 125
+    '%'   shift, and go to state 126
+    '['   shift, and go to state 127
+    ')'   shift, and go to state 218
+
+
+State 215
+
+   80 elif: tELIF expr tTHEN . block
+   81     | tELIF expr tTHEN . block elif
+
+    '{'  shift, and go to state 22
+
+    block  go to state 219
+
+
+State 216
+
+   12 fundeff: '(' argdecs ')' '-' '>' data_type ':' . block
+
+    '{'  shift, and go to state 22
+
+    block  go to state 220
+
+
+State 217
+
+   74 funcal_exr: funcal_exr ',' '(' fundef ')' .
+
+    $default  reduce using rule 74 (funcal_exr)
+
+
+State 218
+
+   75 funcal_exr: funcal_exr ',' '(' expr ')' .
+  110 expr: '(' expr ')' .
+
+    '('       reduce using rule 75 (funcal_exr)
+    '('       [reduce using rule 110 (expr)]
+    ')'       reduce using rule 75 (funcal_exr)
+    ')'       [reduce using rule 110 (expr)]
+    ','       reduce using rule 75 (funcal_exr)
+    ','       [reduce using rule 110 (expr)]
+    $default  reduce using rule 110 (expr)
+
+
+State 219
+
+   80 elif: tELIF expr tTHEN block .
+   81     | tELIF expr tTHEN block . elif
+
+    tELIF  shift, and go to state 195
+    tELSE  shift, and go to state 196
+
+    $default  reduce using rule 80 (elif)
+
+    elif  go to state 221
+
+
+State 220
+
+   12 fundeff: '(' argdecs ')' '-' '>' data_type ':' block .
+
+    $default  reduce using rule 12 (fundeff)
+
+
+State 221
+
+   81 elif: tELIF expr tTHEN block elif .
+
+    $default  reduce using rule 81 (elif)
